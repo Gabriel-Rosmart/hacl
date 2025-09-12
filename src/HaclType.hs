@@ -27,69 +27,41 @@ instance Show HaclNumberType where
   show (HaclInteger i) = show i
 
 instance Show Hacl where
-  show h = ppHacl 0 h
+  show h = ppHacl False 0 h
 
-ppHacl :: Int -> Hacl -> String 
+ppHacl :: Bool -> Int -> Hacl -> String 
 
-ppHacl n (HaclObject o) = (ident ++ "{\n")
+ppHacl isObjectValue n (HaclObject o) = (ident ++ "{\n")
   ++
     (
-      intercalate ", \n" (map (\p -> ident_val ++ (quote $ T.unpack (fst p)) ++ " : " ++ (hppHacl (n + 1) $ snd p)) (M.toList o))
+      intercalate ", \n" (map (\p -> ident_val ++ (quote $ T.unpack (fst p)) ++ " : " ++ (ppHacl True (n + 1) $ snd p)) (M.toList o))
     )
   ++ ("\n" ++ ident ++ "}")
 
-  where ident = concat $ replicate (n * 4) " "
-        ident_val = concat $ replicate ((n + 1) * 4) " "
+  where ident = identKV isObjectValue n
+        ident_val = identKV isObjectValue (n + 1)
 
-ppHacl n (HaclArray a) = (ident ++ "[\n")
+ppHacl isObjectValue n (HaclArray a) = (identf ++ "[\n")
   ++
     (
-      intercalate ", \n" (NE.toList $ NE.map (ppHacl $ n + 1) a)
+      intercalate ", \n" (NE.toList $ NE.map (ppHacl (not isObjectValue) $ n + 1) a)
     )
-  ++ ("\n" ++ ident ++ "]")
+  ++ ("\n" ++ identl ++ "]")
 
-  where ident = concat $ replicate (n * 4) " "
-
-
-ppHacl n (HaclNumber h) = (concat $ replicate (n * 4) " ") ++ (show h)
-ppHacl n (HaclText t) = (concat $ replicate (n * 4) " ") ++ (quote $ T.unpack t)
-ppHacl n (HaclImport i) = (concat $ replicate (n * 4) " ") ++ "import " ++ (quote $ T.unpack i)
-ppHacl n (HaclBool b) = (concat $ replicate (n * 4) " ") ++ (show b)
-ppHacl n (HaclNothing) = (concat $ replicate (n * 4) " ") ++ "nothing"
+  where identf = identKV isObjectValue n
+        identl = identKV (not isObjectValue) n
 
 
+ppHacl b n (HaclNumber h) = (identKV b n) ++ (show h)
+ppHacl b n (HaclText t) = (identKV b n) ++ (quote $ T.unpack t)
+ppHacl b n (HaclImport i) = (identKV b n) ++ "import " ++ (quote $ T.unpack i)
+ppHacl x n (HaclBool b) = (identKV x n) ++ (show b)
+ppHacl b n (HaclNothing) = (identKV b n)  ++ "nothing"
 
-hppHacl :: Int -> Hacl -> String 
-
-hppHacl n (HaclObject o) = "{\n"
-  ++
-    (
-      intercalate ", \n" (map (\p -> ident_val ++ (quote $ T.unpack (fst p)) ++ " : " ++ (ppHacl (n + 1) $ snd p)) (M.toList o))
-    )
-  ++ ("\n" ++ ident ++ "}")
-
-  where ident = concat $ replicate (n * 4) " "
-        ident_val = concat $ replicate ((n + 1) * 4) " "
-
-hppHacl n (HaclArray a) = "[\n"
-  ++
-    (
-      intercalate ", \n" (NE.toList $ NE.map (ppHacl $ n + 1) a)
-    )
-  ++ ("\n" ++ ident ++ "]")
-
-  where ident = concat $ replicate (n * 4) " "
-
-
-hppHacl _ (HaclNumber h) = (show h)
-hppHacl _ (HaclText t) = (quote $ T.unpack t)
-hppHacl _ (HaclImport i) = "import " ++ (quote $ T.unpack i)
-hppHacl _ (HaclBool b) = (show b)
-hppHacl _ (HaclNothing) = "nothing"
-
+-- If is an object value do not ident, otherwise ident
 identKV :: Bool -> Int -> String
-identKV True indentlvl = (concat $ replicate (indentlvl * 4) " ")
-identKV False _ = ""
+identKV False indentlvl = (concat $ replicate (indentlvl * 4) " ")
+identKV True _ = ""
 
 quote :: String -> String
 quote s = "\"" ++ s ++ "\""
