@@ -37,6 +37,10 @@ symbol = L.symbol sc
 ws :: Parser a -> Parser a 
 ws p = p <* space
 
+-- Exposed parser -- 
+haclParser :: Parser Hacl
+haclParser = hobject
+
 -- Object parser
 
 hobject :: Parser Hacl

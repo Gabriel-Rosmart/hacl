@@ -13,14 +13,16 @@ data Hacl = HaclText T.Text |
             HaclNumber HaclNumberType |
             HaclArray (NE.NonEmpty Hacl) |
             HaclObject (M.Map T.Text Hacl) |
-            HaclImport T.Text
+            HaclImport T.Text 
+            deriving Eq
 
-data HaclNumberType = HaclInteger Int | HaclDouble Double
+data HaclNumberType = HaclInteger Int | HaclDouble Double deriving Eq
 
 castHaclNumber :: Scientific -> HaclNumberType
 castHaclNumber n | (isFloating n) = HaclDouble (toRealFloat n)
                  | otherwise = HaclInteger (fromMaybe 0 (toBoundedInteger n))
 
+-- Pretty Printing --
 
 instance Show HaclNumberType where
   show (HaclDouble d) = show d 
