@@ -12,8 +12,7 @@ data Hacl = HaclText T.Text |
             HaclNothing |
             HaclNumber HaclNumberType |
             HaclArray (NE.NonEmpty Hacl) |
-            HaclObject (M.Map T.Text Hacl) |
-            HaclImport T.Text 
+            HaclObject (M.Map T.Text Hacl)
             deriving Eq
 
 data HaclNumberType = HaclInteger Int | HaclDouble Double deriving Eq
@@ -56,7 +55,6 @@ ppHacl isObjectValue n (HaclArray a) = (identf ++ "[\n")
 
 ppHacl b n (HaclNumber h) = (identKV b n) ++ (show h)
 ppHacl b n (HaclText t) = (identKV b n) ++ (quote $ T.unpack t)
-ppHacl b n (HaclImport i) = (identKV b n) ++ "import " ++ (quote $ T.unpack i)
 ppHacl x n (HaclBool b) = (identKV x n) ++ (show b)
 ppHacl b n (HaclNothing) = (identKV b n)  ++ "nothing"
 
