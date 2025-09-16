@@ -12,7 +12,8 @@ data Hacl = HaclText T.Text |
             HaclNothing |
             HaclNumber HaclNumberType |
             HaclArray (NE.NonEmpty Hacl) |
-            HaclObject (M.Map T.Text Hacl)
+            HaclObject (M.Map T.Text Hacl) |
+            HaclImport T.Text
             deriving Eq
 
 data HaclNumberType = HaclInteger Int | HaclDouble Double deriving Eq
@@ -57,6 +58,7 @@ ppHacl b n (HaclNumber h) = (identKV b n) ++ (show h)
 ppHacl b n (HaclText t) = (identKV b n) ++ (quote $ T.unpack t)
 ppHacl x n (HaclBool b) = (identKV x n) ++ (show b)
 ppHacl b n (HaclNothing) = (identKV b n)  ++ "nothing"
+ppHacl b n (HaclImport i) = (identKV b n) ++ "import " ++ (quote $ T.unpack i)
 
 -- If is an object value do not ident, otherwise ident
 identKV :: Bool -> Int -> String

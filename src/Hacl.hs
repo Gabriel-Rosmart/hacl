@@ -67,7 +67,10 @@ pair = do
 -- Any possible Hacl value parser
 
 hval :: Parser Hacl
-hval = choice [hobject, harray, hstring, hnumber, hbool, hnothing]
+hval = choice [hobject, harray, hstring, hnumber, hbool, hnothing, himport]
+
+himport :: Parser Hacl
+himport = (HaclImport . T.pack ) <$> ((string "import") >> space >> (char '\"' *> manyTill L.charLiteral (char '\"')))
 
 -- Quoted string parser
 
