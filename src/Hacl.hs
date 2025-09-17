@@ -61,13 +61,18 @@ pair :: Parser (T.Text, Hacl)
 pair = do 
   (HaclText key) <- (ws hstring)
   void $ (char ':') >> space
-  val <- try (ws hval)
+  val <- try (ws hvalI)
   return (key, val)
 
 -- Any possible Hacl value parser
 
 hval :: Parser Hacl
-hval = choice [hobject, harray, hstring, hnumber, hbool, hnothing, himport]
+hval = choice [hobject, harray, hstring, hnumber, hbool, hnothing]
+
+-- Same as hval but allowing import statements
+
+hvalI :: Parser Hacl
+hvalI = choice [hobject, harray, hstring, hnumber, hbool, hnothing, himport]
 
 himport :: Parser Hacl
 himport = (HaclImport . T.pack ) <$> ((string "import") >> space >> (char '\"' *> manyTill L.charLiteral (char '\"')))
@@ -85,7 +90,7 @@ hnumber = HaclNumber <$> castHaclNumber <$> L.signed (return ()) L.scientific
 -- Boolean parser
 
 hbool :: Parser Hacl
-hbool = (\b -> if b == "true" then HaclBool True else HaclBool False) <$> (string "true" <|> string "false")
+hbool = ((HaclBool True <$ string "true") <|> (HaclBool False <$ string "false"))
 
 hnothing :: Parser Hacl
 hnothing = HaclNothing <$ string "nothing"
