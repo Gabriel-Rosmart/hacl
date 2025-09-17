@@ -38,10 +38,10 @@ ppHacl isObjectValue n (HaclObject o) = (ident ++ "{\n")
     (
       intercalate ", \n" (map (\p -> ident_val ++ (quote $ T.unpack (fst p)) ++ " : " ++ (ppHacl True (n + 1) $ snd p)) (M.toList o))
     )
-  ++ ("\n" ++ ident ++ "}")
+  ++ ("\n" ++ ((concat $ replicate (n * 4) " ")) ++ "}")
 
   where ident = identKV isObjectValue n
-        ident_val = identKV isObjectValue (n + 1)
+        ident_val = (concat $ replicate ((n + 1) * 4) " ")
 
 ppHacl isObjectValue n (HaclArray a) = (identf ++ "[\n")
   ++
