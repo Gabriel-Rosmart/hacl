@@ -1,6 +1,6 @@
-module Inspector where 
+module Data.Hacl.Query where 
 
-import HaclType
+import Data.Hacl.Types
 import qualified Data.Map as M
 import qualified Data.Text as T
 

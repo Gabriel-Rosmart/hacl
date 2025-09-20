@@ -1,8 +1,8 @@
-module Resolver where 
+module Data.Hacl.Resolver where 
 
 import Text.Megaparsec
-import Hacl
-import HaclType
+import Data.Hacl.Parser
+import Data.Hacl.Types
 import qualified Data.Map as M
 import qualified Data.Text as T
 

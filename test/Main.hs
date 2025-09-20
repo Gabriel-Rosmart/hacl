@@ -5,8 +5,8 @@ module Main (main) where
 import Text.Megaparsec
 import Test.Hspec
 import Test.Hspec.Megaparsec
-import Hacl
-import HaclType
+import Data.Hacl.Parser
+import Data.Hacl.Types
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Text as T
 import qualified Data.Map as M

@@ -1,4 +1,4 @@
-module HaclType where
+module Data.Hacl.Types where
 
 import qualified Data.Text as T
 import Data.Scientific

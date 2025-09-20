@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hacl where
+module Data.Hacl.Parser where
 
 import Text.Megaparsec
 import Text.Megaparsec.Char
@@ -10,7 +10,7 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import qualified Data.Map as M
 import Data.List.NonEmpty
 import Control.Monad
-import HaclType
+import Data.Hacl.Types
 
 type Parser = Parsec Void T.Text
 
