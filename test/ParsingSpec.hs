@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main (main) where
+module ParsingSpec where 
 
 import Text.Megaparsec
 import Test.Hspec
@@ -11,9 +11,8 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Text as T
 import qualified Data.Map as M
 
-
-main :: IO ()
-main = hspec $ do
+spec :: Spec
+spec = do
   describe "Hacl Single Token Parse" $ do 
     it "Parses true" $ parse hbool "" "true" `shouldParse` (HaclBool True)
     it "Parses false" $ parse hbool "" "false" `shouldParse` (HaclBool False)

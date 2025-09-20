@@ -36,11 +36,11 @@ library
 test-suite hacl-test
     import:           warnings
     default-language: Haskell2010
-    -- other-modules:
+    other-modules:  ParsingSpec, ResolverSpec
     -- other-extensions:
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
-    main-is:          Main.hs
+    main-is:          Spec.hs
     build-depends:
         base ^>=4.18.3.0,
         megaparsec == 9.7.0,
