@@ -1,4 +1,9 @@
-module Data.Hacl.Pretty (pretty, prettyM) where 
+module Data.Hacl.Pretty (
+                  pretty,
+                  prettyM,
+                  prettyL, 
+                  prettyML) 
+                  where 
  
 import Data.Hacl.Types
 import Data.List
@@ -12,8 +17,15 @@ pretty :: Hacl -> String
 pretty h = ppHacl False 0 h
 
 prettyM :: Maybe Hacl -> String
-prettyM Nothing = "[Nothing Hacl]"
+prettyM Nothing = "Nothing"
 prettyM (Just h) = "Just " ++ pretty h
+
+prettyL :: [Hacl] -> String
+prettyL hl = "[\n" ++ (intercalate ",\n" (map pretty hl)) ++ "\n]"
+
+prettyML :: Maybe [Hacl] -> String
+prettyML Nothing = "Nothing"
+prettyML (Just hl) = "Just " ++ prettyL hl
 
 -- Inner Pretty Print functions
 
