@@ -1,0 +1,3 @@
+{
+  "import" : import "test/assets/single.hacl"
+}

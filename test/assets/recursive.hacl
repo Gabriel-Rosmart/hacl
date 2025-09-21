@@ -1,0 +1,3 @@
+{
+  "recursive" : import "test/assets/recursive.hacl"
+}
