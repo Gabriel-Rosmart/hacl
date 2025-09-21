@@ -16,12 +16,15 @@ import qualified Data.Text as T
 pretty :: Hacl -> String
 pretty h = ppHacl False 0 h
 
+prettyWithLvl :: Int -> Hacl -> String
+prettyWithLvl lvl h = ppHacl True lvl h
+
 prettyM :: Maybe Hacl -> String
 prettyM Nothing = "Nothing"
 prettyM (Just h) = "Just " ++ pretty h
 
 prettyL :: [Hacl] -> String
-prettyL hl = "[\n" ++ (intercalate ",\n" (map pretty hl)) ++ "\n]"
+prettyL hl = "[\n" ++ (intercalate ",\n" (map (prettyWithLvl 1) hl)) ++ "\n]"
 
 prettyML :: Maybe [Hacl] -> String
 prettyML Nothing = "Nothing"
@@ -31,41 +34,41 @@ prettyML (Just hl) = "Just " ++ prettyL hl
 
 ppHacl :: Bool -> Int -> Hacl -> String 
 
-ppHacl isObjectValue n (HaclObject o) = (ident ++ "{\n")
+ppHacl shouldBeIndented ilvl (HaclObject o) = (indent_open ++ "{\n")
   ++
     (
-      intercalate ", \n" (map (\p -> ident_val ++ (quote $ T.unpack (fst p)) ++ " : " ++ (ppHacl True (n + 1) $ snd p)) (M.toList o))
+      intercalate ", \n" (map (\p -> indent_value ++ (quote $ T.unpack (fst p)) ++ " : " ++ (ppHacl False (ilvl + 1) $ snd p)) (M.toList o))
     )
-  ++ ("\n" ++ ((concat $ replicate (n * 4) " ")) ++ "}")
+  ++ ("\n" ++ indent_closing ++ "}")
 
-  where ident = identKV isObjectValue n
-        ident_val = (concat $ replicate ((n + 1) * 4) " ")
+  where indent_open = getIndentation shouldBeIndented ilvl
+        indent_closing = concat $ replicate (ilvl * 4) " "
+        indent_value = concat $ replicate ((ilvl + 1) * 4) " "
 
-ppHacl isObjectValue n (HaclArray a) = (identf ++ "[\n")
+ppHacl shouldBeIndented ilvl (HaclArray a) = (indent_open ++ "[\n")
   ++
     (
-      intercalate ", \n" (NE.toList $ NE.map (ppHacl (not isObjectValue) $ n + 1) a)
+      intercalate ", \n" (NE.toList $ NE.map (ppHacl True $ ilvl + 1) a)
     )
-  ++ ("\n" ++ identl ++ "]")
+  ++ ("\n" ++ indent_closing ++ "]")
 
-  where identf = identKV isObjectValue n
-        identl = identKV (not isObjectValue) n
+  where indent_open = getIndentation shouldBeIndented ilvl
+        indent_closing = concat $ replicate (ilvl * 4) " "
 
 
-ppHacl b n (HaclNumber h) = (identKV b n) ++ (ppHaclNumber h)
-ppHacl b n (HaclText t) = (identKV b n) ++ (quote $ T.unpack t)
-ppHacl x n (HaclBool b) = (identKV x n) ++ (show b)
-ppHacl b n (HaclNothing) = (identKV b n)  ++ "nothing"
-ppHacl b n (HaclImport i) = (identKV b n) ++ "import " ++ (quote $ T.unpack i)
+ppHacl shouldBeIndented ilvl (HaclNumber h) = (getIndentation shouldBeIndented ilvl) ++ (ppHaclNumber h)
+ppHacl shouldBeIndented ilvl (HaclText t) = (getIndentation shouldBeIndented ilvl) ++ (quote $ T.unpack t)
+ppHacl shouldBeIndented ilvl (HaclBool b) = (getIndentation shouldBeIndented ilvl) ++ (show b)
+ppHacl shouldBeIndented ilvl (HaclNothing) = (getIndentation shouldBeIndented ilvl) ++ "nothing"
+ppHacl shouldBeIndented ilvl (HaclImport i) = (getIndentation shouldBeIndented ilvl) ++ "import " ++ (quote $ T.unpack i)
 
 ppHaclNumber :: HaclNumberType -> String
 ppHaclNumber (HaclDouble d) = show d 
 ppHaclNumber (HaclInteger i) = show i
 
--- If is an object value do not ident, otherwise ident
-identKV :: Bool -> Int -> String
-identKV False indentlvl = (concat $ replicate (indentlvl * 4) " ")
-identKV True _ = ""
+getIndentation :: Bool -> Int -> String
+getIndentation True ilvl = (concat $ replicate (ilvl * 4) " ")
+getIndentation False _ = ""
 
 quote :: String -> String
 quote s = "\"" ++ s ++ "\""
