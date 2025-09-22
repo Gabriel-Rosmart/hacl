@@ -23,14 +23,18 @@ library
                       Data.Hacl.Resolver,
                       Data.Hacl.Query,
                       Data.Hacl.Parser,
-                      Data.Hacl.Pretty
+                      Data.Hacl.Pretty,
+                      Data.Hacl.Error
     -- other-modules:
     -- other-extensions:
     build-depends:    base ^>=4.18.3.0,
                       megaparsec == 9.7.0,
                       text == 2.0.2,
                       containers == 0.6.7,
-                      scientific == 0.3.8.0
+                      scientific == 0.3.8.0,
+                      mtl == 2.3.1,
+                      directory == 1.3.9.0,
+                      transformers == 0.6.2.0
     hs-source-dirs:   src
     default-language: Haskell2010
 

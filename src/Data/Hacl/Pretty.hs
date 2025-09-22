@@ -1,5 +1,6 @@
 module Data.Hacl.Pretty (
                   pretty,
+                  prettyError,
                   prettyM,
                   prettyL, 
                   prettyML) 
@@ -10,6 +11,8 @@ import Data.List
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as M
 import qualified Data.Text as T
+import Data.Hacl.Error
+import Text.Megaparsec.Error(errorBundlePretty)
 
 -- Exported function
 
@@ -29,6 +32,13 @@ prettyL hl = "[\n" ++ (intercalate ",\n" (map (prettyWithLvl 1) hl)) ++ "\n]"
 prettyML :: Maybe [Hacl] -> String
 prettyML Nothing = "Nothing"
 prettyML (Just hl) = "Just " ++ prettyL hl
+
+-- Pretty Print Errors
+
+prettyError :: HaclError -> String
+prettyError (RecursiveImport c cl) = "Forbidden recursive import, file " ++ c ++ " tried to import " ++ cl
+prettyError (ResourceNotFound r) = "Resource " ++ r ++ " not found"
+prettyError (MegaparsecParseError e) = errorBundlePretty e
 
 -- Inner Pretty Print functions
 
