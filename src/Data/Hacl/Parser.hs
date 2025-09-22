@@ -85,7 +85,7 @@ hstring = (HaclText . T.pack) <$> (char '\"' *> manyTill L.charLiteral (char '\"
 -- Number parser
 
 hnumber :: Parser Hacl
-hnumber = HaclNumber <$> castHaclNumber <$> L.signed (return ()) L.scientific
+hnumber = HaclNumber <$> L.signed (return ()) L.scientific
 
 -- Boolean parser
 

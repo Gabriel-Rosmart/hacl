@@ -51,6 +51,7 @@ test-suite hacl-test
         megaparsec == 9.7.0,
         text == 2.0.2,
         containers == 0.6.7,
+        scientific == 0.3.8.0,
         hspec == 2.11.12,
         hspec-megaparsec == 2.2.1,
         hacl

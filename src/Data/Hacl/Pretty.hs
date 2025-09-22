@@ -13,6 +13,7 @@ import qualified Data.Map as M
 import qualified Data.Text as T
 import Data.Hacl.Error
 import Text.Megaparsec.Error(errorBundlePretty)
+import Data.Scientific
 
 -- Exported function
 
@@ -66,15 +67,14 @@ ppHacl shouldBeIndented ilvl (HaclArray a) = (indent_open ++ "[\n")
         indent_closing = concat $ replicate (ilvl * 4) " "
 
 
-ppHacl shouldBeIndented ilvl (HaclNumber h) = (getIndentation shouldBeIndented ilvl) ++ (ppHaclNumber h)
+ppHacl shouldBeIndented ilvl (HaclNumber n) = (getIndentation shouldBeIndented ilvl) ++ (ppHaclNumber n)
 ppHacl shouldBeIndented ilvl (HaclText t) = (getIndentation shouldBeIndented ilvl) ++ (quote $ T.unpack t)
 ppHacl shouldBeIndented ilvl (HaclBool b) = (getIndentation shouldBeIndented ilvl) ++ (show b)
 ppHacl shouldBeIndented ilvl (HaclNothing) = (getIndentation shouldBeIndented ilvl) ++ "nothing"
 ppHacl shouldBeIndented ilvl (HaclImport i) = (getIndentation shouldBeIndented ilvl) ++ "import " ++ (quote $ T.unpack i)
 
-ppHaclNumber :: HaclNumberType -> String
-ppHaclNumber (HaclDouble d) = show d 
-ppHaclNumber (HaclInteger i) = show i
+ppHaclNumber :: Scientific -> String
+ppHaclNumber n = if isInteger n then (formatScientific Generic (Just 0) n) else (formatScientific Generic Nothing n) 
 
 getIndentation :: Bool -> Int -> String
 getIndentation True ilvl = (concat $ replicate (ilvl * 4) " ")
