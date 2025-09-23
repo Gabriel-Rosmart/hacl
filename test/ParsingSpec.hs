@@ -42,11 +42,11 @@ spec = do
     it "Parses uncommented array" $ parse harray "" "[true, nothing, 5]"
       `shouldParse` (HaclArray (NE.fromList [HaclBool True, HaclNothing, HaclNumber (scientific 5 0)]))
     
-    it "Parses commented array" $ parse harray "" "[true, // First\n nothing, // Second \n 5]"
+    it "Parses commented array" $ parse harray "" "[true, -- First\n nothing, -- Second \n 5]"
       `shouldParse` (HaclArray (NE.fromList [HaclBool True, HaclNothing, HaclNumber (scientific 5 0)]))
 
   describe "Hacl Object Parse" $ do 
-    it "Parses uncommented object" $ parse hobject "" "{\"keepalive\" : false}"
+    it "Parses uncommented object" $ parse hobject "" "{\"keepalive\" :: false}"
       `shouldParse` (HaclObject (M.fromList [(T.pack "keepalive", HaclBool False)]))
-    it "Parses commented object" $ parse hobject "" "{\"keepalive\" : false, // First \n\"ttl\" : 60}"
+    it "Parses commented object" $ parse hobject "" "{\"keepalive\" :: false, -- First \n\"ttl\" :: 60}"
       `shouldParse` (HaclObject (M.fromList [(T.pack "keepalive", HaclBool False), (T.pack "ttl", HaclNumber (scientific 60 0))]))

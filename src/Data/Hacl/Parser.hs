@@ -18,7 +18,7 @@ type Parser = Parsec Void T.Text
 -- It allows for line comments but not block comments
 
 sc :: Parser ()
-sc = L.space space1 (L.skipLineComment "//") empty 
+sc = L.space space1 (L.skipLineComment "--") empty 
 
 -- Lexeme parser
 -- Parses a lexeme and cosumes the whitespace after
@@ -60,7 +60,7 @@ harray = between (symbol "[") (symbol "]") $ do
 pair :: Parser (T.Text, Hacl)
 pair = do 
   (HaclText key) <- (ws hstring)
-  void $ (char ':') >> space
+  void $ (string "::") >> space
   val <- try (ws hvalI)
   return (key, val)
 

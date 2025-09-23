@@ -49,7 +49,7 @@ ppHacl :: Bool -> Int -> Hacl -> String
 ppHacl shouldBeIndented ilvl (HaclObject o) = (indent_open ++ "{\n")
   ++
     (
-      intercalate ", \n" (map (\p -> indent_value ++ (quote $ T.unpack (fst p)) ++ " : " ++ (ppHacl False (ilvl + 1) $ snd p)) (M.toList o))
+      intercalate ", \n" (map (\p -> indent_value ++ (quote $ T.unpack (fst p)) ++ " :: " ++ (ppHacl False (ilvl + 1) $ snd p)) (M.toList o))
     )
   ++ ("\n" ++ indent_closing ++ "}")
 
