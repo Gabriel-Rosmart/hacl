@@ -39,6 +39,7 @@ prettyML (Just hl) = "Just " ++ prettyL hl
 prettyError :: HaclError -> String
 prettyError (RecursiveImport c cl) = "Forbidden recursive import, file " ++ c ++ " tried to import " ++ cl
 prettyError (ResourceNotFound r) = "Resource " ++ r ++ " not found"
+prettyError (ResourceNoPermissions r) = "Resource " ++ r ++" is not readable"
 prettyError (MegaparsecParseError e) = errorBundlePretty e
 
 -- Inner Pretty Print functions

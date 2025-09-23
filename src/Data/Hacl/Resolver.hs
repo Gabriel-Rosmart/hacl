@@ -44,10 +44,12 @@ resolvePair banned ccaller (t, HaclObject o) = sequenceA (t, resolveImports bann
 resolvePair banned ccaller (t, HaclImport i) = sequenceA (t, load banned ccaller (T.unpack i))
 resolvePair _ _ (t, e) = return (t, e)
 
--- Try to read a file failing if it does not exist
+-- Try to read a file failing if it does not exist or is not readable
 
 tryReadFile :: FilePath -> ExceptT HaclError IO String
 tryReadFile file = (lift $ doesFileExist file) >>= (\b -> if b == False then
     ExceptT (return $ Left (ResourceNotFound file)) else
-    (lift $ readFile file) >>= (\c -> ExceptT (return $ Right c))
+    (lift $ (getPermissions file) >>= (return . readable)) >>= (\p -> if p == False then
+    ExceptT (return $ Left (ResourceNoPermissions file)) else (lift $ readFile file) >>=
+    (\c -> ExceptT (return $ Right c)))
   )

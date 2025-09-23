@@ -5,6 +5,7 @@ import Data.Void
 import qualified Data.Text as T
 
 data HaclError = RecursiveImport { caller :: FilePath, callee :: FilePath } 
-  | MegaparsecParseError (ParseErrorBundle T.Text Void) 
+  | MegaparsecParseError (ParseErrorBundle T.Text Void)
+  | ResourceNoPermissions FilePath
   | ResourceNotFound { resource :: FilePath } deriving (Eq, Show)
 
